@@ -1,0 +1,372 @@
+/* ==========================================================================
+   LIQUID GLASS LAYER (2026)
+   Apple-inspired: translucent surfaces, frosted blur, specular edges,
+   layered depth, subtle 3D float. Loaded LAST so it wins over the older
+   premium-glassmorphism / premium-polish / premium-2026 layers.
+   Content, copy and section order are untouched.
+   ========================================================================== */
+
+:root {
+  --lg-font: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Inter", "Instrument Sans", system-ui, sans-serif;
+
+  /* Palette: cool canvas, four soft light sources behind the glass */
+  --lg-canvas: #eceff7;
+  --lg-ink: #0b1220;
+  --lg-blue: #0a84ff;
+  --lg-violet: #7d6bff;
+  --lg-peach: #ffb691;
+  --lg-mint: #7fe5c8;
+
+  /* Glass recipe */
+  --lg-fill: rgba(255, 255, 255, 0.44);
+  --lg-fill-strong: rgba(255, 255, 255, 0.64);
+  --lg-stroke: rgba(255, 255, 255, 0.78);
+  --lg-blur: 28px;
+  --lg-sheen: linear-gradient(145deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.1) 42%, rgba(255, 255, 255, 0.28) 100%);
+  --lg-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.28),
+    inset 1px 0 0 rgba(255, 255, 255, 0.45),
+    0 28px 50px -26px rgba(24, 36, 90, 0.34),
+    0 2px 6px rgba(24, 36, 90, 0.06);
+
+  /* Dark glass, used on the black sections */
+  --lg-dark-fill: rgba(255, 255, 255, 0.07);
+  --lg-dark-stroke: rgba(255, 255, 255, 0.17);
+  --lg-dark-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+    0 30px 60px -30px rgba(0, 0, 0, 0.7);
+
+  --lg-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --body-font: var(--lg-font);
+}
+
+html { background: var(--lg-canvas); }
+body {
+  font-family: var(--lg-font);
+  background: var(--lg-canvas);
+  color: var(--lg-ink);
+}
+::selection { background: var(--lg-blue); color: #fff; }
+
+/* The older cinematic scenes are replaced by the ambient light below */
+#cinematic-bg { display: none !important; }
+
+/* --------------------------------------------------------------------------
+   1. AMBIENT LIGHT: soft coloured orbs that the glass refracts
+   -------------------------------------------------------------------------- */
+#lg-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(90% 70% at 50% -10%, #ffffff 0%, rgba(255, 255, 255, 0) 60%),
+    linear-gradient(180deg, #f4f6fb 0%, var(--lg-canvas) 100%);
+}
+.lg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.85;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+.lg-orb.o1 { width: 52vmax; height: 52vmax; left: -14vmax; top: -12vmax; background: radial-gradient(circle at 35% 35%, var(--lg-blue), transparent 68%); }
+.lg-orb.o2 { width: 46vmax; height: 46vmax; right: -12vmax; top: 6vmax; background: radial-gradient(circle at 50% 50%, var(--lg-violet), transparent 68%); }
+.lg-orb.o3 { width: 40vmax; height: 40vmax; left: 18vmax; bottom: -16vmax; background: radial-gradient(circle at 50% 50%, var(--lg-peach), transparent 68%); opacity: 0.55; }
+.lg-orb.o4 { width: 30vmax; height: 30vmax; right: 12vmax; bottom: 4vmax; background: radial-gradient(circle at 50% 50%, var(--lg-mint), transparent 68%); opacity: 0.45; }
+
+/* Light sections let the ambient show through */
+.banner-three-area,
+.about-three-area,
+.portfolio-three-area,
+.testimonial-three-area,
+.brand-three-area,
+.p-sec:not(.dark) {
+  background: transparent !important;
+}
+
+/* Cursor light follows the pointer, cool white instead of lime */
+#p-glow {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 62%) !important;
+  mix-blend-mode: soft-light;
+}
+#p-progress { background: linear-gradient(90deg, var(--lg-blue), var(--lg-violet), var(--lg-peach)) !important; height: 2px; }
+
+/* --------------------------------------------------------------------------
+   2. GLASS SURFACES (light)
+   -------------------------------------------------------------------------- */
+html body .header.header-three,
+html body .banner-three-left,
+html body .banner-three-counter-item:not(.bg-black),
+html body .about-three-counter .tw-btn-circle,
+html body .portfolio-three-item,
+html body .testimonial-three-wrapper,
+html body .brand-three-item,
+html body .p-card:not(.ink),
+html body .p-avail,
+html body .header-three-social ul li a,
+html body .tw-offcanvas-open-btn {
+  background: var(--lg-sheen), var(--lg-fill) !important;
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(185%);
+  backdrop-filter: blur(var(--lg-blur)) saturate(185%);
+  border: 1px solid var(--lg-stroke) !important;
+  box-shadow: var(--lg-shadow) !important;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Header becomes a floating glass bar */
+html body .header.header-three {
+  position: fixed !important;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  width: auto;
+  max-width: 1320px;
+  margin-inline: auto;
+  padding-block: 10px;
+  border-radius: 28px;
+  z-index: 999;
+  animation: none;
+  transition: background 0.5s var(--lg-ease), box-shadow 0.5s var(--lg-ease);
+}
+html body .header.header-three.fixed-header {
+  background: var(--lg-sheen), var(--lg-fill-strong) !important;
+  box-shadow: var(--lg-shadow), 0 18px 40px -20px rgba(24, 36, 90, 0.35) !important;
+}
+.header-three-social ul li a,
+.tw-offcanvas-open-btn { border-radius: 16px !important; }
+.header-three-logo { background: transparent !important; box-shadow: none !important; }
+
+/* Radii step up with the size of the surface */
+.banner-three-left { border-radius: 30px; }
+.banner-three-counter-item { border-radius: 26px !important; }
+.portfolio-three-item { border-radius: 34px; }
+.testimonial-three-wrapper { border-radius: 30px; }
+.brand-three-item { border-radius: 24px; }
+.p-card { border-radius: 30px; }
+.about-three-thumb { border-radius: 32px; overflow: hidden; }
+.p-avail { border-radius: 999px; }
+
+/* Dark tile inside the hero stack */
+html body .banner-three-counter-item.bg-black {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02) 50%), rgba(9, 14, 30, 0.78) !important;
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(160%);
+  backdrop-filter: blur(var(--lg-blur)) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--lg-dark-shadow);
+}
+
+/* Specular highlight that tracks the pointer (position set in liquid-glass.js) */
+.lg-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(420px circle at var(--mx, 30%) var(--my, 0%), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 45%);
+  opacity: 0;
+  transition: opacity 0.5s var(--lg-ease);
+  z-index: 2;
+  mix-blend-mode: soft-light;
+}
+.lg-glass:hover::after { opacity: 1; }
+.lg-dark.lg-glass::after {
+  background: radial-gradient(420px circle at var(--mx, 30%) var(--my, 0%), rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 50%);
+  mix-blend-mode: normal;
+}
+
+/* 3D tilt: JS writes transform, this only prepares smooth return */
+.lg-tilt {
+  transform-style: preserve-3d;
+  transition: transform 0.7s var(--lg-ease), box-shadow 0.5s var(--lg-ease);
+  will-change: transform;
+}
+.lg-tilt.is-tilting { transition: transform 0.12s linear, box-shadow 0.5s var(--lg-ease); }
+
+/* --------------------------------------------------------------------------
+   3. HERO: depth layers and slow float
+   -------------------------------------------------------------------------- */
+.banner-three-title {
+  background: linear-gradient(180deg, #0a1020 8%, #3c4f80 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.banner-three-man img {
+  filter: drop-shadow(0 44px 60px rgba(20, 30, 80, 0.38));
+  transform: translate3d(calc(var(--hx, 0) * 14px), calc(var(--hy, 0) * 8px), 0);
+  transition: transform 0.6s var(--lg-ease);
+}
+.banner-three-counter-item {
+  transform: translate3d(calc(var(--hx, 0) * -12px), calc(var(--hy, 0) * -8px), 0);
+  transition: transform 0.6s var(--lg-ease);
+}
+@keyframes lgFloat {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -9px; }
+}
+.banner-three-left { animation: lgFloat 9s ease-in-out infinite; }
+.banner-three-counter-item:nth-child(1) { animation: lgFloat 7s ease-in-out infinite; }
+.banner-three-counter-item:nth-child(2) { animation: lgFloat 8.5s ease-in-out -2s infinite; }
+.banner-three-counter-item:nth-child(3) { animation: lgFloat 10s ease-in-out -4s infinite; }
+
+/* --------------------------------------------------------------------------
+   4. BUTTONS: glossy pill, blue-violet wash on hover
+   -------------------------------------------------------------------------- */
+html body .tw-hover-btn.bg-black {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 48%), #0b1220 !important;
+  border-radius: 999px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.4), 0 14px 30px -12px rgba(11, 18, 32, 0.6);
+}
+html body .tw-hover-btn .tw-hover-btn-circle-dot {
+  background: linear-gradient(135deg, var(--lg-blue), var(--lg-violet)) !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. DARK SECTIONS: raised glass panels, not flat black slabs
+   -------------------------------------------------------------------------- */
+html body .service-three-area,
+html body .footer-three-area {
+  margin-inline: 14px;
+  border-radius: 48px;
+  background:
+    radial-gradient(60% 50% at 12% 8%, rgba(10, 132, 255, 0.28), transparent 65%),
+    radial-gradient(50% 45% at 92% 30%, rgba(125, 107, 255, 0.26), transparent 65%),
+    radial-gradient(55% 45% at 50% 105%, rgba(255, 182, 145, 0.16), transparent 65%),
+    #050914 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 40px 80px -40px rgba(11, 18, 32, 0.6);
+}
+html body .footer-three-area { margin-bottom: 14px; overflow: clip; }
+
+/* Outer wrapper from the older layer stays flat, only the pill is glass */
+html body .service-three-item {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-radius: 0;
+}
+html body .service-three-single {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.02) 55%), rgba(255, 255, 255, 0.045) !important;
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(160%);
+  backdrop-filter: blur(var(--lg-blur)) saturate(160%);
+  border: 1px solid var(--lg-dark-stroke) !important;
+  box-shadow: var(--lg-dark-shadow) !important;
+  position: relative;
+  isolation: isolate;
+}
+html body .service-three-single:hover { border-color: rgba(255, 255, 255, 0.4) !important; }
+
+html body .footer-three-top-info,
+html body .footer-three-form input,
+html body .footer-three-form textarea {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 55%), var(--lg-dark-fill) !important;
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(160%);
+  backdrop-filter: blur(var(--lg-blur)) saturate(160%);
+  border: 1px solid var(--lg-dark-stroke) !important;
+  box-shadow: var(--lg-dark-shadow);
+  border-radius: 22px;
+  position: relative;
+}
+.footer-three-form input:focus,
+.footer-three-form textarea:focus {
+  outline: none;
+  border-color: rgba(10, 132, 255, 0.7) !important;
+  box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.22), var(--lg-dark-shadow);
+}
+
+/* Dark tile that sits on the light page needs a dark base to stay legible */
+html body .p-card.ink {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.02) 50%), rgba(9, 14, 30, 0.82) !important;
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(160%);
+  backdrop-filter: blur(var(--lg-blur)) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: var(--lg-dark-shadow);
+  color: #fff;
+}
+
+/* Submit keeps the brand lime but as a glossy glass pill */
+.footer-three-form button[type="submit"],
+.footer-three-form input[type="submit"] {
+  border-radius: 999px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 16px 34px -14px rgba(231, 255, 110, 0.55);
+}
+
+/* --------------------------------------------------------------------------
+   6. FAQ and chips
+   -------------------------------------------------------------------------- */
+.p-head h2,
+.p-card h3 {
+  font-family: var(--lg-font);
+  text-transform: none;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+.p-card small { opacity: 0.6; }
+.p-card { transition: transform 0.6s var(--lg-ease), box-shadow 0.6s var(--lg-ease); }
+.p-chips li {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 1px 0 #fff, 0 6px 14px -8px rgba(24, 36, 90, 0.3);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.p-card.ink .p-chips li { background: rgba(255, 255, 255, 0.08); border-color: var(--lg-dark-stroke); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2); }
+.p-chips li:hover { background: linear-gradient(135deg, var(--lg-blue), var(--lg-violet)); color: #fff; border-color: transparent; }
+
+.p-faq details {
+  background: var(--lg-sheen), var(--lg-fill);
+  border: 1px solid var(--lg-stroke);
+  border-radius: 24px;
+  padding: 22px 28px;
+  margin-bottom: 12px;
+  box-shadow: var(--lg-shadow);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(185%);
+  backdrop-filter: blur(var(--lg-blur)) saturate(185%);
+  transition: background 0.5s var(--lg-ease);
+}
+.p-faq details[open] { background: var(--lg-sheen), var(--lg-fill-strong); }
+
+/* --------------------------------------------------------------------------
+   7. Details: focus, scrollbar, motion and small screens
+   -------------------------------------------------------------------------- */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--lg-blue);
+  outline-offset: 3px;
+}
+::-webkit-scrollbar-track { background: var(--lg-canvas); }
+::-webkit-scrollbar-thumb { background: rgba(11, 18, 32, 0.28); border: 2px solid var(--lg-canvas); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(11, 18, 32, 0.45); }
+
+@media (max-width: 991px) {
+  :root { --lg-blur: 16px; }
+  html body .header.header-three { top: 8px; left: 8px; right: 8px; border-radius: 22px; }
+  html body .service-three-area,
+  html body .footer-three-area { margin-inline: 8px; border-radius: 30px; }
+  .lg-orb { filter: blur(60px); }
+  .banner-three-left,
+  .banner-three-counter-item { animation: none; }
+}
+@media (max-width: 575px) {
+  :root { --lg-blur: 12px; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html body .header.header-three,
+  html body .banner-three-left,
+  html body .portfolio-three-item,
+  html body .testimonial-three-wrapper,
+  html body .p-card:not(.ink) { background: rgba(255, 255, 255, 0.86) !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .banner-three-left,
+  .banner-three-counter-item,
+  .lg-orb { animation: none !important; }
+  .lg-tilt, .banner-three-man img, .banner-three-counter-item { transition: none; transform: none; }
+}

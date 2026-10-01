@@ -1,0 +1,63 @@
+/* ==========================================================================
+   PREMIUM POLISH LAYER - loaded after main.css / premium-glassmorphism.css
+   ========================================================================== */
+
+::selection { background: #e7ff6e; color: #02090f; }
+
+/* Sticky header: frosted glass instead of flat black */
+.header.fixed-header {
+  background: rgba(2, 9, 15, 0.72) !important;
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 40px -12px rgba(0, 0, 0, 0.45);
+}
+
+/* Header + offcanvas menu links */
+
+.tw-main-menu-mobile ul li a[data-scroll] {
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .3s ease;
+}
+.tw-main-menu-mobile ul li a[data-scroll]:hover { transform: translateX(10px); }
+
+/* Buttons: soft lift + glow */
+.tw-hover-btn {
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease;
+  will-change: transform;
+}
+.tw-hover-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.45);
+}
+
+/* Cards / work items: refined hover */
+.portfolio-three-item, .service-three-single {
+  transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s ease;
+}
+.portfolio-three-item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 60px -25px rgba(0, 0, 0, 0.4);
+}
+
+/* Images render crisper and never overflow */
+img { max-width: 100%; height: auto; }
+
+/* Keyboard accessibility */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid #e7ff6e;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Sections keep their place under the sticky header on native anchor fallback */
+section[id] { scroll-margin-top: 80px; }
+
+/* Slim, on-brand scrollbar */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #02090f; }
+::-webkit-scrollbar-thumb { background: #3a4650; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #56636f; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tw-hover-btn, .portfolio-three-item, .service-three-single { transition: none; }
+}
